@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Anonymous Chatbox</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+</head>
+<body>
+    <div class="chat-container">
+        <h1 class="pixel-title1">Anonymous Chatbox</h1>
+        <h3 class="pixel-title2">The chat will be deleted after 15 minutes of inactivity</h3>
+
+        <div class="mensagens">
+            {% for msg in mensagens %}
+                <div class="mensagem">{{ msg }}</div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <form id="form-msg" method="POST" class="input-form">
+        <input type="text" name="texto" placeholder="Type your message..." required autocomplete="off">
+        <button type="submit">Send</button>
+    </form>
+    
+    <script>
+        async function buscarMensagens() {
+          try {
+            const response = await fetch('/msgs');  // rota que retorna mensagens em JSON
+            const mensagens = await response.json();
+      
+            const container = document.querySelector('.mensagens');
+            container.innerHTML = ''; // limpa mensagens atuais
+      
+            mensagens.forEach(msg => {
+              const div = document.createElement('div');
+              div.classList.add('mensagem');
+              div.textContent = msg;
+              container.appendChild(div);
+            });
+          } catch (e) {
+            console.error('Erro ao buscar mensagens:', e);
+          }
+        }
+      
+        // Atualiza a cada 3 segundos
+        setInterval(buscarMensagens, 3000);
+
+      </script>
+      
+    
+
+</body>
+</html>
